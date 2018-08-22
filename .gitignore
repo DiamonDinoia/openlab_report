@@ -246,3 +246,4 @@ TSWLatexianTemp*
 *.sta
 
 .vscode/
+__latexindent*
