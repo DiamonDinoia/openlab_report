@@ -1,0 +1,70 @@
+\begin{titlepage}
+\begin{center}
+
+%\vspace{-0.85cm}
+\large
+%\vspace*{10cm}
+
+\setlength{\TPHorizModule}{1mm}
+\setlength{\TPVertModule}{\TPHorizModule}
+% Set the Paragraph Indent to zero, so the first line is not Indented
+% Back-up the current value so it can be put back at the end of the title page
+\newlength{\backupparindent}
+\setlength{\backupparindent}{\parindent}
+\setlength{\parindent}{0mm}			
+% Begins a textbox at 30 mm from the left of the edge of the paper and 89 mm from the top
+% The width of the textbox is 150 mm 
+% The height of the box cannot be defined, so it is your task to keep the text not too long
+\begin{textblock}{150}(30,50)
+    \vspace*{15mm}
+    \Huge
+    \vspace{4cm}
+    \textcolor{OpenlabBlue}{\textbf{\doctitle }}\\
+    \Large
+    \vspace*{5mm}
+
+
+    \begin{flushleft}
+        \textcolor{OpenlabDarkBlue}{\textsc{August 2018}}\\
+        \large
+	
+    \end{flushleft}
+    \vspace*{1in}
+    \begin{figure}
+        \raggedleft
+    \begin{minipage}[r]{0.2 \textwidth} %scale number here too move the Author and Supervisor section
+   \begin{flushleft}                     % Larger number means further left on the page and vice versa.
+	\textsc{\textbf{Author:}}\\
+    \me\\\bigskip\bigskip
+
+   % \small
+   \normalsize
+    \department\\\bigskip\bigskip
+    
+    \textsc{\textbf{Supervisors(s):}}\\\medskip
+	%\begin{tabular}{ccc}
+    \firstCommitteeMember\\
+    \secondCommitteeMember\\
+%    \thirdCommitteeMember\\
+	%\end{tabular}
+   \end{flushleft}
+
+\end{minipage}    
+\end{figure}
+\end{textblock}
+
+
+\vspace*{20mm}
+
+
+\vfill
+\version
+
+\vfill
+%\docdate
+\large
+\includegraphics[scale=0.095]{figures/openlab}
+% Put the Paragraph Indent back to its original value
+\setlength{\parindent}{\backupparindent}
+\end{center}
+\end{titlepage} 

@@ -1,0 +1,124 @@
+%
+% CERN REPORT template for LaTeX
+%
+% Public version 1.0
+% 2018-2019  Vasileios S.Dimakopoulos
+%
+% THIS IS THE MAIN FILE  (i.e. compile this file, compiling the others directly won't work)
+%
+\documentclass[a4paper,10pt,twoside]{report}
+
+%all the other includes etc. are done in the thesis.sty file.
+\usepackage{thesis}
+\usepackage[noframe]{showframe}% http://ctan.org/pkg/showframe
+\providecommand*\LenToUnit[1]{#1\@gobble}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\newcommand\AtPageUpperRight[1]{\AtPageUpperLeft{
+\put(\LenToUnit{0.9\paperwidth},\LenToUnit{-1cm}){#1}}
+}
+
+
+%\usepackage[margin=0.3in]{geometry}
+\AddToShipoutPictureBG*{
+  \AtPageUpperLeft{\raisebox{-\height}{\includegraphics[width=4in]{figures/openlab_pic}}}%
+}
+
+\AddToShipoutPictureBG{
+ \ifnum\value{page}>1
+ \AtPageUpperRight{\raisebox{-\height}{\includegraphics[scale=0.25]{figures/openlab_logo}}}
+ \fi
+}
+
+%
+%
+% These commands need to be defined in order to produce a correct and personalized document
+%
+\newcommand{\doctitle}{FULL TITLE OF THE REPORT}
+\newcommand{\footerTitle}{Report name for footer}
+\newcommand{\me}{Aleksander \\ Wennersteen} %Long name problems \\ looked silly on one line
+\newcommand{\keywords}{keyword1, keyword2, keyword3}
+\newcommand{\version}{}
+\newcommand{\monthYear}{\today}
+
+
+
+%Be sure to use all the titles for your committee members!!! (their names show up on the very first page!)
+\newcommand{\firstCommitteeMember}{Pablo Llopis}
+\newcommand{\secondCommitteeMember}{Carolina Lindqvist}
+%\newcommand{\thirdCommitteeMember}{Co-Supervisor}
+
+\author{\me}
+
+%Your Cern deparment and/or other affiliation
+\newcommand{\department}{CERN IT-CM-IS \\ HPC}
+
+
+
+%
+% PDF settings
+%
+\hypersetup
+{
+    pdfauthor={\me},
+    pdftitle={\doctitle},
+    pdfsubject={\doctitle},
+    pdfkeywords={\keywords}
+}
+\cfoot{\vspace{0.1in}\includegraphics[width=1.1\linewidth]{figures/openlab_banner}}
+%To change the "name of the report go to thesis.sty and change fancyfoot[L]
+
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+
+\begin{document}
+
+%use this include for PDF and distribution versions
+\pagenumbering{roman}
+
+\include{titlepage}
+
+\normalsize
+
+\newpage
+
+\chapter*{\textcolor{OpenlabDarkBlue}{Project Specification} }\label{chapter:specification}
+\input{chapters/specification}
+
+\chapter*{\textcolor{OpenlabDarkBlue}{Abstract}} \label{chapter:abstract}
+\input{chapters/abstract}
+
+\tableofcontents
+
+\listoffigures
+
+\listoftables
+
+\lstlistoflistings
+
+
+\clearpage
+
+\setcounter{page}{10}
+\pagenumbering{arabic}
+\chapter{First chapter}\label{chapter:first_chapter}
+\input{chapters/first_chapter}
+
+\chapter{Second chapter}\label{chapter:second_chapter}
+\input{chapters/second_chapter}
+
+\chapter{Conclusions}\label{chapter:conclusions}
+\input{chapters/conclusions}
+
+%Choose a good bibliography style, plain would do often, but these might be nice too
+%\bibliographystyle{these}
+\bibliographystyle{plain}
+\bibliography{references.bib}
+
+\clearpage %ensures the Appendix ToC entry points to the correct appendix page
+\appendix
+\addcontentsline{toc}{chapter}{Appendix} %add line to mark start of appendixes, 
+
+\input{appendices/main}
+
+\end{document}
