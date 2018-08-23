@@ -70,6 +70,9 @@
 \newcommand{\nocontentsline}[3]{}
 \newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
 
+% \graphicspath{{img}
+% \usepackage{graphicx}
+
 \begin{document}
 
 %use this include for PDF and distribution versions
@@ -87,7 +90,10 @@
 \chapter*{\textcolor{OpenlabDarkBlue}{Abstract}} \label{chapter:abstract}
 \input{chapters/abstract}
 
+\begingroup
+\color{OpenlabDarkBlue}
 \tableofcontents
+\endgroup
 
 \listoffigures
 
@@ -100,11 +106,11 @@
 
 \setcounter{page}{10}
 \pagenumbering{arabic}
-\chapter{First chapter}\label{chapter:first_chapter}
-\input{chapters/first_chapter}
+\chapter{From physics to... Physics}\label{chapter:first_chapter}
+\input{chapters/chapter01}
 
 \chapter{Second chapter}\label{chapter:second_chapter}
-\input{chapters/second_chapter}
+\input{chapters/chapter02}
 
 \chapter{Conclusions}\label{chapter:conclusions}
 \input{chapters/conclusions}
