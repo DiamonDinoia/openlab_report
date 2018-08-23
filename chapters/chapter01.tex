@@ -12,4 +12,6 @@ Detectors are split in two levels: \textbf{physics detector level} and \textbf{e
 % Should I say that not interesting reading are discarded here?
 The event that survive this ends up dumped into \textbf{disks} and send to the \textbf{High level trigger}. \\
 It is important to notice that these decision are taken in real time, to meet the throughput and timing requirements everything is built with \textbf{asic}s and \textbf{fpga}s boards. 
-\paragraph{Data processing}
+\paragraph{Data processing} 
+Data processing is performed both online and offline. %The \textbf{high level trigger} (HLT) performs it online while all the rest is offline. 
+The first step, called \textbf{local reconstruction}, in the offline data processing is to transform charges in physical quantities such as \textbf{energy}, \textbf{time}, and \textbf{position}. This operation is done channel by channel independently form each other. Then, information coming from different channel of the same detector are combined by the \textbf{cross channel clustering} into \textbf{local detector cluster}s. The final step needed to obtain \textbf{particle object}s is the \textbf{cross detector clustering} in which data coming from different detector is combined. The particle object forms the dataset used by theoretical physicists to do physics. \\
