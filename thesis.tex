@@ -70,6 +70,13 @@
 \newcommand{\nocontentsline}[3]{}
 \newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
 
+\usepackage[
+singlelinecheck=false % <-- important
+]{caption}
+
+\newenvironment{claim}[1]{\par\noindent\underline{Claim:}\space#1}{}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
 % \graphicspath{{img}
 % \usepackage{graphicx}
 
@@ -109,10 +116,10 @@
 
 \setcounter{page}{10}
 \pagenumbering{arabic}
-\chapter{From physics to... Physics}\label{chapter:first_chapter}
+\chapter{From physics to... Physics}\label{chapter:01}
 \input{chapters/chapter01}
 
-\chapter{Second chapter}\label{chapter:second_chapter}
+\chapter{Local energy reconstruction}\label{chapter:02}
 \input{chapters/chapter02}
 
 \chapter{Conclusions}\label{chapter:conclusions}
