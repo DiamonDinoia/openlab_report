@@ -40,13 +40,42 @@ As the name says the goal of this step is: \\
   \quad Where in this case $n$ is fixed to 10. 
 \end{claim}\\
 Translated into mathematical terms this means:
-\begin{equation}\label{eq:01}
+\begin{equation}\label{eq:chisq}
   \begin{split}
-    & \min(\norm{Px - b}) \\
+    & \min(\chi^2)=\min(\norm{Px - b}) \\
+    & \forall x: x \geq 0\\
     \text{where:}&  \\
     & x = \text{energy vector} \\
     & P:CHARGE \rightarrow ENERGY =\text{feature matrix} \\
     & b = \text{charge vector}
   \end{split}
 \end{equation}
-As shown in \cite{amplituamplitude_reconde_recon} the statement above is incomplete. A perfect mapping from charges to energy does not exist because signal from the shower does not dissipate within one time slice ($25ns$). 
+Which is a min$\chi^2$ problem with additional positivity constraints. This constraint is present because physically speaking negative energy does not make sense. \\
+As shown in \cite{amplituamplitude_reconde_recon} the statement above is incomplete. A perfect mapping from charges to energy does not exist because signal from the shower does not dissipate within one time slice ($25ns$). Adding the correlation term this problem becomes:
+\begin{equation}\label{eq:constrained_chi_sq}
+  \begin{split}
+      &\min(\norm{(Px - b)^T\Sigma(x)^{-1}(Px - b)}) \\
+      & \forall x: x \geq 0\\
+  \end{split}
+\end{equation}
+It is worth pointing out that $\Sigma$ depends on x, meaning also $\Sigma$ is unknown. \\
+To compute $\Sigma$ an iterative procedure is used:
+\begin{enumerate}
+  \item Compute $\Sigma$.
+  \item Minimize $\chi^2$.
+  \item If not convergence goto 1.
+\end{enumerate}
+More precisely $\Sigma$ is the covariance matrix representing the noise correlation between time samples i and j, obtained from data where no signal is present, and the single sample noise.\\
+To solve the problem stated in \ref{eq:chisq} several algorithms exists, for example \textbf{lsqnonneg} illustrated in \cite{nnls} and the \textbf{ffnls} illustrated in \cite{fnnls}. The one implemented is fnnls since as measured in \cite{Chen09nonnegativityconstraints} it is faster.\\
+The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem but to solve it with nnls needs to be reduced into the canonical form. The redution exploits the Cholesky decomposition and is illustrated in \ref{eq:reduction}.
+\begin{equation}\label{eq:reduction}
+  \begin{split}
+  & (Px-b)^T\Sigma(x)^-1(Px-b)\\
+  \text{Hp: }&\Sigma=LL^T, (AB)^-1=B^-1A^-1\\
+  =& (Px-b)^T L^{-T} L^{-1} (Px-b)\\
+  =& (L^{-1}Px-L^{-1}b)  L^{-1} (Px-b)\\
+  =& (L^{-1}Px-L^{-1}b) (L^{-1}Px-L^{-1}b)\\
+  =& (P'x-b')^T(P'x-b')\\
+  =& min(\chi^2)
+  \end{split}
+\end{equation}
