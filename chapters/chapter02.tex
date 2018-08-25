@@ -71,11 +71,17 @@ The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem b
 \begin{equation}\label{eq:reduction}
   \begin{split}
   & (Px-b)^T\Sigma(x)^-1(Px-b)\\
-  \text{Hp: }&\Sigma=LL^T, (AB)^-1=B^-1A^-1\\
-  =& (Px-b)^T L^{-T} L^{-1} (Px-b)\\
-  =& (L^{-1}Px-L^{-1}b)  L^{-1} (Px-b)\\
-  =& (L^{-1}Px-L^{-1}b) (L^{-1}Px-L^{-1}b)\\
-  =& (P'x-b')^T(P'x-b')\\
-  =& min(\chi^2)
+  \equiv &\quad \Sigma=LL^T,\space (AB)^{-1} = B^{-1} A^{-1}\\
+  & (Px-b)^T L^{-T} L^{-1} (Px-b)\\
+  \equiv &\quad (AB)^T = B^T A^T \\
+  & (L^{-1}Px-L^{-1}b)^T  L^{-1} (Px-b)\\
+  \equiv & \\
+  & (L^{-1}Px-L^{-1}b)^T (L^{-1}Px-L^{-1}b)\\
+  \equiv &\quad L^{-1}P=P', \space L^{-1}b=b' \\
+  & (P'x-b')^T(P'x-b')\\
+  \equiv & \\
+  & min(\chi^2)
   \end{split}
 \end{equation}
+
+\section{Fast non negative least square (FNNLS)}
