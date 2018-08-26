@@ -42,7 +42,7 @@ As the name says the goal of this step is: \\
 Translated into mathematical terms this means:
 \begin{equation}\label{eq:chisq}
   \begin{split}
-    & \min(\chi^2)=\min(\norm{Px - b}) \\
+    & \min(\chi^2)=\arg min_x(\norm{Px - b}) \\
     & \forall x: x \geq 0\\
     \text{where:}&  \\
     & x = \text{energy vector} \\
@@ -54,7 +54,7 @@ Which is a min$\chi^2$ problem with additional positivity constraints. This cons
 As shown in \cite{amplituamplitude_reconde_recon} the statement above is incomplete. A perfect mapping from charges to energy does not exist because signal from the shower does not dissipate within one time slice ($25ns$). Adding the correlation term this problem becomes:
 \begin{equation}\label{eq:constrained_chi_sq}
   \begin{split}
-      &\min(\norm{(Px - b)^T\Sigma(x)^{-1}(Px - b)}) \\
+      &\arg min_x(\norm{(Px - b)^T\Sigma(x)^{-1}(Px - b)}) \\
       & \forall x: x \geq 0\\
   \end{split}
 \end{equation}
@@ -84,4 +84,51 @@ The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem b
   \end{split}
 \end{equation}
 
-\section{Fast non negative least square (FNNLS)}
+\section{Fast non negative least square algorithm (FNNLS)}
+
+\begin{algorithm}[h]
+  \begin{flushleft}
+  \caption{NNLS}
+  \label{alg:nnls}
+  \textbf{Input:} \\
+  \hspace*{\algorithmicindent} \text{\textbf{A} real valued matrix of dimension $m \times n$}\\
+  \hspace*{\algorithmicindent} \text{\textbf{b} real valued vector of dimension $m$}\\
+  \hspace*{\algorithmicindent} \text{{$\boldsymbol\epsilon$} the maximum accepted error} \\
+  \hspace*{\algorithmicindent} \text{\textbf{K} the maximum number of iterations} \\
+  \textbf{Output:} \\
+  \hspace*{\algorithmicindent} \text{\textbf{$x$} the solution vector}
+  \end{flushleft}
+  \begin{algorithmic}[1]
+    \Function{nnls}{$\protect{A}$, $\protect{b}$, $\protect{\epsilon}$, $\protect{K}$}
+      \State $x \gets 0$
+      \State $P=\emptyset$
+      \State $R=\{ 1, 2, ..., m \}$
+      \State $w=A^T(b - Ax)$ \Comment{compute the gradient}
+      \While{$R \neq \emptyset \land max(w) < \epsilon \land k < K$}
+        \State $j \gets max(w^P)$ \Comment{$w^P \gets \{w_j : j \in P\}$}
+        \State Add $j$ to $P$
+        \State Remove $j$ from $R$
+        \State $A^P \gets  \{a_{ij} \in A : i \in P \land j \in P\}$
+        \State $s \gets ((A^P)^T A^P)^{-1}A^P b^P$ \Comment{s is a vector of the same dimension of P }
+        \While{$min(s) \leq 0 $}
+          \State $\alpha=min_i\{\frac{x_i}{x_i-s_i} : i \in P \land s_i \leq 0 \}$
+          \State $ \forall i \in P : x_i \gets x_i + \alpha (s_i - x_i)$
+          \State move to $R$ all $i \in P : x_i \gets 0$
+          \State $s \gets ((A^P)^T A^P)^{-1}A^P b^P$ \Comment{recompute s for the next iteration}
+          \EndWhile
+        \State $\forall i \in P : x_i \gets s_i$
+        \State $w \gets A^T(b - Ax)$
+        \State $k \gets k+1$
+      \EndWhile
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+  \caption{FNNLS}
+  \label{alg:fnnls}
+  \begin{algorithmic}[1]
+    \State $w \gets (A^T b) (A^T A)x $
+    \State $s \gets ((A^TA)^P)^{-1} (A^Tb)^P$
+  \end{algorithmic}
+\end{algorithm}
