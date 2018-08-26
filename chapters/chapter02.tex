@@ -85,6 +85,12 @@ The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem b
 \end{equation}
 
 \section{Fast non negative least square algorithm (FNNLS)}
+The nnls is an \textit{active set iterative algorithm}. It uses two sets: 
+\begin{itemize}   
+\item \textbf{Passive set (P)}: the constraint is "passive", meaning that is not satisfied.   
+\item \textbf{Active set (R)}:  the constraint is "active", meaning that is satisfied.   
+\end{itemize}   
+The algorithm presented in pseudo-code \ref{alg:nnls}, starts with a feasible solution (line 2), then checks for the positivity constraint. If there are some negative components exploiting a gradient it finds a non negative one that minimize the error. More details can be founs in \cite{nnls}
 
 \begin{algorithm}[h]
   \begin{flushleft}
@@ -123,7 +129,10 @@ The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem b
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
-
+This algorithm is slow because at each iteration it requires to calculate the pseudo-inverse (line 11). 
+FNNLS, showed in algorithm \ref{alg:fnnls}, is faster because it reduces the computational burden of this operation. The idea is simple: instead of projecting the matrix $A$ over $P$ and then performing the transposition and multiplication, it saves $A^TA$ and performs the projection over $P$. 
+Another operation avoided is the multiplication between $A$ and $b$, also in this case the multiplication is performed in the preprocessing phase. At runtime, only the projection over $P$ is performed. \\
+This improvements reduces the computational making the it to run faster. 
 \begin{algorithm}[h]
   \caption{FNNLS}
   \label{alg:fnnls}
