@@ -90,7 +90,7 @@ The nnls is an \textit{active set iterative algorithm}. It uses two sets:
 \item \textbf{Passive set (P)}: the constraint is "passive", meaning that is not satisfied.   
 \item \textbf{Active set (R)}:  the constraint is "active", meaning that is satisfied.   
 \end{itemize}   
-The algorithm presented in pseudo-code \ref{alg:nnls}, starts with a feasible solution (line 2), then checks for the positivity constraint. If there are some negative components exploiting a gradient it finds a non negative one that minimize the error. More details can be founs in \cite{nnls}
+The pseudo-code presented in algorithm \ref{alg:nnls}, starts with a feasible solution (line 2), then checks for the positivity constraint. If there are some negative components it finds a non negative one that minimize the error, exploiting a gradient (line 5). More details can be found in \cite{nnls}
 
 \begin{algorithm}[h]
   \begin{flushleft}
@@ -141,3 +141,45 @@ This improvements reduces the computational making the it to run faster.
     \State $s \gets ((A^TA)^P)^{-1} (A^Tb)^P$
   \end{algorithmic}
 \end{algorithm}
+\section{Implementation details}
+This algorithm has several numerical issues coming from the pseudo-inverse computation (line 11 of pseudo-code \ref{alg:nnls} and line 2 of pseudo-code \ref{alg:fnnls}). \\
+The original definition of the matrix $A^P$ is $A^P=\{A.col(i) : \forall i \in P\} \cup \{0: \forall i \in R\}$. While the definition of the vector $b^P$ is $b^P=\{b_i : \forall i \in P\} \cup \{0: \forall i \in R\}$. This results in a $m \times n$ matrix and a $m$ dimensional vector. Calculating the pseudo-inverse with this matrix generates numerical issues, the results is a matrix containing some $-nan$.\\
+One way to solve this problem is to reduce the number of operations needed to perform the computation. To achieve this there are three ways:
+\begin{enumerate}
+  \item Invert the matrix through some decomposition.
+  \item Changing the definition of $A^P$ to reduce the size of the matrix and the vector.
+  \item Combining both 1 and 2.
+\end{enumerate}
+\paragraph{Decompositions}
+The decompositions tested are \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting. These decompositions has been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
+\paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition I noticed that a lot of useless operations containing $0$ were present. Not only this slows down this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed also plain inverse and Cholesky to work without issues.
+\paragraph*{}
+In the end the Cholesky without pivoting, applied on the modified $A^P$ matrix, was chosen because it performs best.
+
+\section{GPU porting}
+Until now there are two version ported on GPU, the one taken from \textit{cms-sw} codebase and the one that I implemented. \\
+To exploit the parallelism provided by these devices a channel level parallelization is performed. More precisely all the readout from the channel are buffered and then there is a kernel invocation on all of them.
+
+\section{Optimizations}
+There are two kind of optimizations performed: numerical and algorithmic. In the first case some mathematical properties are exploited to reduce the number of operations, in the other case some architecture level knowledge is used to speedup the computation.
+\subsection{Numerical}
+The optimization performed here is to avoid using swap matrices and the $P$ and $R$ vectors. Simulating the algorithm it is possible to notice that the $P$, $R$ partitioning can be obtained in-place by permuting the matrix A.
+\begin{equation}
+  % \caption{Partitioning example}
+  \label{mat:partitioned}
+  \text{\tiny \# Passive}\mymatrix{\begin{bmatrix}[cc|cc]
+    a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+    a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
+    \hline \\
+    \vdots  & \vdots  & \ddots & \vdots  \\
+    a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+  \end{bmatrix}}
+\end{equation}
+As shown in \ref{mat:partitioned} the passive set grows from the top left corner. The size of this block is the same as $P$. This way, instead of a vector, a counter is enough to save the active set. Every time a variable enters in the active set the corresponding column and row are swapped accordingly and the $nActive$ counter is incremented. \\
+Both the vector b and x are permuted, because otherwise they would not be aligned with the matrix. \\
+A permutation matrix is used to keep track of all the swapping and the solution is reordered before being returned. \\
+This optimization allows to reduce both memory allocation/de-allocation and cache faults resulting in a performance improvement of a factor of 2.
+\subsection{Algorithmic}
+The optimization performed here is exploiting some pragmas to vectorise fixed iteration loops and to unroll the others. \\
+From the profiling performed I noticed that in case of fixed iteration loops the vectorization gives better performance results respect to the unroll. Also the compiler unroll vectorized loops combining the best of both approaches. \\
+The unroll value has been determined empirically. I measured branch misprediction and cache faults for each value and used the one that minimize them.\\

@@ -5,4 +5,8 @@
 \contentsline {figure}{\numberline {2.1}{\ignorespaces HLT processing pipeline\relax }}{3}{figure.caption.8}
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Data processing time share\relax }}{4}{figure.caption.9}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Speedup achieved with 10 iterations, log channel scale, higher is better\relax }}{9}{figure.caption.11}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Time needed to complete 10 iterations, linear channel scale, lower is better\relax }}{10}{figure.caption.12}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Time needed to complete 10 iterations, log channel scale, lower is better\relax }}{10}{figure.caption.13}
+\addvspace {10\p@ }
 \addvspace {10\p@ }

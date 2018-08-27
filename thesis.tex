@@ -76,12 +76,23 @@ singlelinecheck=false % <-- important
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{booktabs}
 
 \let\oldemptyset\emptyset
 \let\emptyset\varnothing
 
 \newenvironment{claim}[1]{\par\noindent\underline{Claim:}\space#1}{}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+\newcommand{\mymatrix}[1]{\ensuremath{\left\downarrow\vphantom{#1}\right.\overset{\xrightarrow[\hphantom{#1}]{\text{\# Passive}}}{#1}}}
 
 % \graphicspath{{img}
 % \usepackage{graphicx}
@@ -128,6 +139,8 @@ singlelinecheck=false % <-- important
 
 \chapter{Local energy reconstruction}\label{chapter:02}
 \input{chapters/chapter02}
+\chapter{Results}\label{chapter:03}
+\input{chapters/chapter03}
 
 \chapter{Conclusions}\label{chapter:conclusions}
 \input{chapters/conclusions}
