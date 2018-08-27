@@ -42,11 +42,11 @@ As the name says the goal of this step is: \\
 Translated into mathematical terms this means:
 \begin{equation}\label{eq:chisq}
   \begin{split}
-    & \min(\chi^2)=\arg min_x(\norm{Px - b}) \\
+    & \min(\chi^2)=\arg min_x(\norm{Px - b}^2) \\
     & \forall x: x \geq 0\\
     \text{where:}&  \\
     & x = \text{energy vector} \\
-    & P:CHARGE \rightarrow ENERGY =\text{feature matrix} \\
+    & P:ENERGY \rightarrow CHARGE =\text{feature matrix} \\
     & b = \text{charge vector}
   \end{split}
 \end{equation}
@@ -54,7 +54,7 @@ Which is a min$\chi^2$ problem with additional positivity constraints. This cons
 As shown in \cite{amplituamplitude_reconde_recon} the statement above is incomplete. A perfect mapping from charges to energy does not exist because signal from the shower does not dissipate within one time slice ($25ns$). Adding the correlation term this problem becomes:
 \begin{equation}\label{eq:constrained_chi_sq}
   \begin{split}
-      &\arg min_x(\norm{(Px - b)^T\Sigma(x)^{-1}(Px - b)}) \\
+      &\arg min_x(\norm{(Px - b)^T\Sigma(x)^{-1}(Px - b)}^2) \\
       & \forall x: x \geq 0\\
   \end{split}
 \end{equation}
@@ -79,8 +79,6 @@ The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem b
   & (L^{-1}Px-L^{-1}b)^T (L^{-1}Px-L^{-1}b)\\
   \equiv &\quad L^{-1}P=P', \space L^{-1}b=b' \\
   & (P'x-b')^T(P'x-b')\\
-  \equiv & \\
-  & min(\chi^2)
   \end{split}
 \end{equation}
 
