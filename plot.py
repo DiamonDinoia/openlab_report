@@ -16,19 +16,18 @@ values = {
     'Overhead': 56.4,
 }
 
-# explode = [0 for _ in range(len(values))]
-# explode[0] = 0.1
-# explode[1] = 0.1
-# explode[5] = 0.1
+explode = [0 for _ in range(len(values))]
+explode[0] = 0.1
+explode[1] = 0.1
 
-# total = sum(values.values())
-# out = plt.pie(list(values.values()),
-#               autopct='%1.1f%%', shadow=False, explode=explode, labels=list(values.keys()))
+total = sum(values.values())
+out = plt.pie(list(values.values()),
+              autopct='%1.1f%%', shadow=False, explode=explode, labels=list(values.keys()))
 
-# plt.axis('equal')
-# # plt.tight_layout()
-# plt.rcParams.update({'font.size': 22})
-# plt.show()
+plt.axis('equal')
+# plt.tight_layout()
+plt.rcParams.update({'font.size': 22})
+plt.show()
 
 tmp = list(values.values()).copy()
 
