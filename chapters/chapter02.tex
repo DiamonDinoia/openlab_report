@@ -34,23 +34,19 @@ Given the time needed to perform this reconstruction even achieving a speedup of
   \end{tabular}
 \end{table}
 \section{Problem statement}
-As the name says the goal of this step is: \\
-\begin{claim}
-  For each channel \{given $n$ charge readouts $\rightarrow$ reconstruct the energy\}. \\
-  \quad Where in this case $n$ is fixed to 10. 
-\end{claim}\\
-Translated into mathematical terms this means:
+For each channel \{given $n$ charge readouts $\rightarrow$ reconstruct the energy\}. \\
 \begin{equation}\label{eq:chisq}
   \begin{split}
     & \min(\chi^2)=\arg min_x(\norm{Px - b}^2) \\
-    & \forall x: x \geq 0\\
+    & \forall i: x_i \geq 0\\
     \text{where:}&  \\
     & x = \text{energy vector} \\
     & P:ENERGY \rightarrow CHARGE =\text{feature matrix} \\
-    & b = \text{charge vector}
+    & b = \text{charge vector}\\
+    & n = 10 \text{ (in this particular case)}
   \end{split}
 \end{equation}
-Which is a min$\chi^2$ problem with additional positivity constraints. This constraint is present because physically speaking negative energy does not make sense. \\
+Which is a standard min$\chi^2$ problem with additional positivity constraints. This constraint is present because physically speaking negative energy does not make sense. \\
 As shown in \cite{amplituamplitude_reconde_recon} the statement above is incomplete. A perfect mapping from charges to energy does not exist because signal from the shower does not dissipate within one time slice ($25ns$). Adding the correlation term this problem becomes:
 \begin{equation}\label{eq:constrained_chi_sq}
   \begin{split}
@@ -85,8 +81,8 @@ The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem b
 \section{Fast non negative least square algorithm (FNNLS)}
 The nnls is an \textit{active set iterative algorithm}. It uses two sets: 
 \begin{itemize}   
-\item \textbf{Passive set (P)}: the constraint is "passive", meaning that is not satisfied.   
-\item \textbf{Active set (R)}:  the constraint is "active", meaning that is satisfied.   
+\item \textbf{Passive set (P)}: the constraint is "passive", meaning that it is not satisfied.   
+\item \textbf{Active set (R)}:  the constraint is "active", meaning that it is satisfied.   
 \end{itemize}   
 The pseudo-code presented in algorithm \ref{alg:nnls}, starts with a feasible solution (line 2), then checks for the positivity constraint. If there are some negative components it finds a non negative one that minimize the error, exploiting a gradient (line 5). More details can be found in \cite{nnls}
 
@@ -120,7 +116,7 @@ The pseudo-code presented in algorithm \ref{alg:nnls}, starts with a feasible so
           \State move to $R$ all $i \in P : x_i \gets 0$
           \State $s \gets ((A^P)^T A^P)^{-1}A^P b^P$ \Comment{recompute s for the next iteration}
           \EndWhile
-        \State $\forall i \in P : x_i \gets s_i$
+        \State $\forall i \in P : x_i = s_i$
         \State $w \gets A^T(b - Ax)$
         \State $k \gets k+1$
       \EndWhile
@@ -152,16 +148,16 @@ One way to solve this problem is to reduce the number of operations needed to pe
 The decompositions tested are \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting. These decompositions has been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
 \paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition I noticed that a lot of useless operations containing $0$ were present. Not only this slows down this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed also plain inverse and Cholesky to work without issues.
 \paragraph*{}
-In the end the Cholesky without pivoting, applied on the modified $A^P$ matrix, was chosen because it performs best.
+In the end the Cholesky without pivoting, applied on the modified $A^P$ matrix, was chosen because it is proven in \cite{Lee_numericallyefficient} to perform best.\\
 
 \section{GPU porting}
-Until now there are two version ported on GPU, the one taken from \textit{cms-sw} codebase and the one that I implemented. \\
-To exploit the parallelism provided by these devices a channel level parallelization is performed. More precisely all the readout from the channel are buffered and then there is a kernel invocation on all of them.
+Until now there are two version ported on GPU, the one taken from \textit{cms-sw} codebase and the one implemented from scratch.\\
+To exploit the parallelism provided by these devices a channel level parallelization is performed but, a dynamic parallelism inside the channel it to be studied.%More precisely all the readout from the channel are buffered and then there is a kernel invocation on all of them.
 
 \section{Optimizations}
 There are two kind of optimizations performed: numerical and algorithmic. In the first case some mathematical properties are exploited to reduce the number of operations, in the other case some architecture level knowledge is used to speedup the computation.
 \subsection{Numerical}
-The optimization performed here is to avoid using swap matrices and the $P$ and $R$ vectors. Simulating the algorithm it is possible to notice that the $P$, $R$ partitioning can be obtained in-place by permuting the matrix A.
+The optimization performed here is to avoid using swap matrices and the $P$ and $R$ vectors. Studying the algorithm it is possible to notice that the $P$, $R$ partitioning can be obtained in-place by permuting the matrix A.
 \begin{equation}
   % \caption{Partitioning example}
   \label{mat:partitioned}
@@ -176,8 +172,8 @@ The optimization performed here is to avoid using swap matrices and the $P$ and 
 As shown in \ref{mat:partitioned} the passive set grows from the top left corner. The size of this block is the same as $P$. This way, instead of a vector, a counter is enough to save the active set. Every time a variable enters in the active set the corresponding column and row are swapped accordingly and the $nActive$ counter is incremented. \\
 Both the vector b and x are permuted, because otherwise they would not be aligned with the matrix. \\
 A permutation matrix is used to keep track of all the swapping and the solution is reordered before being returned. \\
-This optimization allows to reduce both memory allocation/de-allocation and cache faults resulting in a performance improvement of a factor of 2.
+This optimization allows to reduce both memory allocation/de-allocation and cache faults resulting in a performance improvement of a factor of 2, as showed in \ref{img:speedup01}.
 \subsection{Algorithmic}
-The optimization performed here is exploiting some pragmas to vectorise fixed iteration loops and to unroll the others. \\
-From the profiling performed I noticed that in case of fixed iteration loops the vectorization gives better performance results respect to the unroll. Also the compiler unroll vectorized loops combining the best of both approaches. \\
-The unroll value has been determined empirically. I measured branch misprediction and cache faults for each value and used the one that minimize them.\\
+The optimization performed here is exploiting some pragmas to vectorise fixed iteration loops and to unroll the others, which have non constant number  of iterations. \\
+From the profiling performed can be noted that in case of fixed iteration loops the vectorization gives better performance results respect to the unroll. Also the compiler unroll vectorized loops combining the best of both approaches. \\
+The unroll value has been determined empirically exploiting measurements like branch misprediction and cache faults for each value and used the one that minimize them.\\

@@ -9,4 +9,7 @@
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Time needed to complete 10 iterations, linear channel scale, lower is better\relax }}{10}{figure.caption.12}
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Time needed to complete 10 iterations, log channel scale, lower is better\relax }}{10}{figure.caption.13}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces VTune profiling of multifit\_cpu. 37\% of the total time is spent performing $A^TA$.\relax }}{11}{figure.caption.14}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Second bottleneck found using VTune. 34\% of the time is spent calculating the Cholesky decomposition.\relax }}{12}{figure.caption.15}
+\addvspace {10\p@ }
 \addvspace {10\p@ }
