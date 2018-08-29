@@ -3,8 +3,11 @@
   \caption{Cern data flow from collisions to analysis}
   \label{img:dataflow}
 \end{figure}
-% This might be an introduction
-Modern high energy physics (HEP) requires big data analysis. To make it possible several large scale objects are needed: from accelerators, detectors, data centers to the thousands of people involved to design and run the infrastructure. Here at CERN everything starts with physics by colliding particles and everything ends with the physics performed by analyzing the data acquired. But, to produce the necessary data, in the right amount, a long and complicated process, showed in figure \ref{img:dataflow}, is involved. It is worth to briefly describe it to understand the reason of our work and where is it place inside it. \\
+
+% This might be an introduction\\
+Modern high energy physics (HEP) requires experiments. To realize them several large scale objects are needed: from accelerators, detectors, data centers to the thousands of people involved to design and run the infrastructure.\\ %Here at CERN everything starts with physics by colliding particles beams and everything ends with the physics performed by analyzing the data acquired.\\ %But, to produce the necessary data, in the right amount, a long and complicated process, showed in figure \ref{img:dataflow}, is involved. It is worth to briefly describe it to understand the reason of our work and where is it place inside it. \\
+Experiments are needed to trigger and observe physical processes. There are two kind of processes: interesting (\textbf{X}) and not interesting (\textbf{Y}) ones. The not interesting ones are processes that are already studied and measured, while the others are the objective of the research. Unfortunately, interesting processes are quite rare, thus a huge amount of trials before observing one of them is needed. \\
+This creates a lot of difficult and interesting IT challenges because everything from data acquisition to data analysis is need to scale to match volume and time requirements. 
 \paragraph{Data generation}
 The process starts with \textbf{particle collisions} this lead to particle interactions that create some \textbf{intermediate product}. This intermediate product can not be directly observed, bit it decays in \textbf{particles} that go through the detectors. The intermediate product is divided in \textbf{X} and \textbf{Y}, X is what physicists are trying to study while Y is something that produces similar particles as Y but is not what they are looking for.
 \paragraph{Data aquisition}
