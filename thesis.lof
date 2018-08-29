@@ -11,5 +11,6 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces VTune profiling of multifit\_cpu. 37\% of the total time is spent performing $A^TA$.\relax }}{11}{figure.caption.14}
 \contentsline {figure}{\numberline {4.2}{\ignorespaces Second bottleneck found using VTune. 34\% of the time is spent calculating the Cholesky decomposition.\relax }}{12}{figure.caption.15}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Cache efficient $10 \times 10$ matrix multiplication. The time needed to perform it is only 16.1\% respect to the 37.6\% spent by eigen implementation.\relax }}{13}{figure.caption.16}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
