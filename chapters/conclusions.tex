@@ -1,4 +1,4 @@
-From our analysis is it possible to conclude that GPUs outperforms CPUs in HEP workflows. In all tests we did not manage to generate enough threads to fill all the warps. And even in this case the speedup showed in table \ref{tab:speedup} is of a factor of $7.52$. Also, the CPU implementation optimized with all the numerical, algorithmic, and architecture dependent tweaks reaches a speedup of $1.79$.  
+From our analysis is it possible to conclude that GPUs outperforms CPUs in HEP workflows. In all tests we did not manage to generate enough threads to fill all the warps. And even in this case the speedup showed in table \ref{tab:speedup} is of a factor of $5.62$. Also, the CPU implementation optimized with all the numerical, algorithmic, and architecture dependent tweaks reaches a speedup of $1.36$.  
 \begin{table}[h]
   \caption{speedup achieved after optimizing the matrix multiplication}
   \label{tab:speedup}
@@ -7,11 +7,11 @@ From our analysis is it possible to conclude that GPUs outperforms CPUs in HEP w
     channels &  1024  &  2048  &  4096  &  8192  &  16384 &  32768 &  65536 \\
     \midrule
     legacy\_multifit\_cpu &   1.00 &   1.00 &   1.00 &   1.00 &   1.00 &   1.00 &   1.00 \\
-    legacy\_multifit\_gpu &   4.77 &   4.03 &   3.99 &   4.90 &   5.11 &   5.72 &   6.87 \\
-    multifit\_cpu        &   1.32 &   1.40 &   1.44 &   1.39 &   1.38 &   1.53 &   1.79 \\
-    multifit\_gpu        &   5.30 &   5.60 &   6.10 &   5.92 &   5.61 &   6.42 &   7.52 \\
-    multifit\_gpu\_swap   &   5.30 &   5.60 &   6.10 &   5.76 &   5.61 &   6.42 &   7.50 \\
-    multifit\_cpu\_swap   &   0.48 &   0.49 &   0.53 &   0.52 &   0.52 &   0.57 &   0.67 \\
+    legacy\_multifit\_gpu &   5.00 &   5.50 &   5.75 &   5.75 &   5.46 &   5.62 &   5.63 \\
+    multifit\_cpu        &   1.25 &   1.36 &   1.35 &   1.28 &   1.34 &   1.32 &   1.34 \\
+    multifit\_gpu        &   5.00 &   5.50 &   5.75 &   5.75 &   5.46 &   5.62 &   5.62 \\
+    multifit\_gpu\_swap   &   5.00 &   5.50 &   5.45 &   5.67 &   5.46 &   5.62 &   5.63 \\
+    multifit\_cpu\_swap   &   0.45 &   0.48 &   0.50 &   0.50 &   0.50 &   0.50 &   0.50 \\
     \bottomrule
     \end{tabular}
 \end{table}
