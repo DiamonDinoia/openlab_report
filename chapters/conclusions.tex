@@ -1,1 +1,15 @@
-Write your conclusions here.
+\begin{table}
+  \caption{speedup achieved after}
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    channels &  1024  &  2048  &  4096  &  8192  &  16384 &  32768 &  65536 \\
+    \midrule
+    legacy\_multifit\_cpu &   1.00 &   1.00 &   1.00 &   1.00 &   1.00 &   1.00 &   1.00 \\
+    legacy\_multifit\_gpu &   4.68 &   4.38 &   4.87 &   5.14 &   5.50 &   5.47 &   5.26 \\
+    multifit\_cpu        &   1.30 &   1.40 &   1.39 &   1.35 &   1.35 &   1.35 &   1.34 \\
+  multifit\_gpu        &   3.34 &   4.38 &   4.56 &   4.85 &   4.76 &   5.22 &   5.39 \\
+  multifit\_gpu\_swap   &   4.68 &   4.20 &   4.66 &   5.14 &   5.33 &   5.54 &   5.33 \\
+  multifit\_cpu\_swap   &   0.47 &   0.47 &   0.50 &   0.38 &   0.49 &   0.49 &   0.42 \\
+  \bottomrule
+\end{tabular}
+\end{table}

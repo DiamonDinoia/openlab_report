@@ -5,12 +5,12 @@
 \contentsline {figure}{\numberline {2.1}{\ignorespaces HLT processing pipeline\relax }}{4}{figure.caption.8}
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Data processing time share\relax }}{5}{figure.caption.9}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Speedup achieved with 10 iterations, log channel scale, higher is better\relax }}{10}{figure.caption.11}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Time needed to complete 10 iterations, linear channel scale, lower is better\relax }}{11}{figure.caption.12}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Speedup achieved with 10 iterations, higher is better\relax }}{11}{figure.caption.11}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Time needed to complete 10 iterations, linear channel scale, lower is better\relax }}{12}{figure.caption.12}
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Time needed to complete 10 iterations, log channel scale, lower is better\relax }}{12}{figure.caption.13}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces VTune profiling of multifit\_cpu. 37\% of the total time is spent performing $A^TA$.\relax }}{13}{figure.caption.14}
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Second bottleneck found using VTune. 34\% of the time is spent calculating the Cholesky decomposition.\relax }}{14}{figure.caption.15}
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Cache efficient $10 \times 10$ matrix multiplication. The time needed to perform it is only 16.1\% respect to the 37.6\% spent by eigen implementation.\relax }}{15}{figure.caption.16}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces VTune profiling of multifit\_cpu. 37\% of the total time is spent performing $A^TA$.\relax }}{14}{figure.caption.14}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Second bottleneck found using VTune. 34\% of the time is spent calculating the Cholesky decomposition.\relax }}{15}{figure.caption.15}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Cache efficient $10 \times 10$ matrix multiplication. The time needed to perform it is only 16.1\% respect to the 37.6\% spent by eigen implementation.\relax }}{16}{figure.caption.16}
 \addvspace {10\p@ }
 \addvspace {10\p@ }

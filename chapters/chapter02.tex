@@ -12,7 +12,7 @@ The table \ref{table:timeshare} shows how much time is spent in every single ste
   \label{img:hlt}
   \includegraphics[width=\textwidth]{img/timeshare}
 \end{figure}
-Given the time needed to perform this reconstruction even achieving a speedup of two would reduce the total processing time of more than $10\%$. This is my focus in this project try to reduce it as much as possible.
+Given the time needed to perform this reconstruction even achieving a speedup of two would reduce the total processing time by more than $10\%$. This is the focus of this project: try to reduce it as much as possible by both optimizing it for CPU and exploiting GPU resources.
 \begin{table}[ht]
   \caption{Time spent into the various HLT reconstruction steps}
   \label{table:timeshare}
@@ -62,7 +62,7 @@ To compute $\Sigma$ an iterative procedure is used:
   \item If not convergence goto 1.
 \end{enumerate}
 More precisely $\Sigma$ is the covariance matrix representing the noise correlation between time samples i and j, obtained from data where no signal is present, and the single sample noise.\\
-To solve the problem stated in \ref{eq:chisq} several algorithms exists, for example \textbf{lsqnonneg} illustrated in \cite{nnls} and the \textbf{ffnls} illustrated in \cite{fnnls}. The one implemented is fnnls since as measured in \cite{Chen09nonnegativityconstraints} it is faster.\\
+To solve the problem stated in \ref{eq:chisq} several algorithms exist, for example \textbf{lsqnonneg} illustrated in \cite{nnls} and the \textbf{ffnls} illustrated in \cite{fnnls}. The one implemented is fnnls since as measured in \cite{Chen09nonnegativityconstraints} it is faster.\\
 The problem presented in \ref{eq:constrained_chi_sq} is not a $\chi^2$ problem but to solve it with nnls needs to be reduced into the canonical form. The redution exploits the Cholesky decomposition and is illustrated in \ref{eq:reduction}.
 \begin{equation}\label{eq:reduction}
   \begin{split}
@@ -126,7 +126,7 @@ The pseudo-code presented in algorithm \ref{alg:nnls}, starts with a feasible so
 This algorithm is slow because at each iteration it requires to calculate the pseudo-inverse (line 11). 
 FNNLS, showed in algorithm \ref{alg:fnnls}, is faster because it reduces the computational burden of this operation. The idea is simple: instead of projecting the matrix $A$ over $P$ and then performing the transposition and multiplication, it saves $A^TA$ and performs the projection over $P$. 
 Another operation avoided is the multiplication between $A$ and $b$, also in this case the multiplication is performed in the preprocessing phase. At runtime, only the projection over $P$ is performed. \\
-This improvements reduces the computational making the it to run faster. 
+These improvements reduces the computational making the it to run faster. 
 \begin{algorithm}[h]
   \caption{FNNLS}
   \label{alg:fnnls}
@@ -137,7 +137,7 @@ This improvements reduces the computational making the it to run faster.
 \end{algorithm}
 \section{Implementation details}
 This algorithm has several numerical issues coming from the pseudo-inverse computation (line 11 of pseudo-code \ref{alg:nnls} and line 2 of pseudo-code \ref{alg:fnnls}). \\
-The original definition of the matrix $A^P$ is $A^P=\{A.col(i) : \forall i \in P\} \cup \{0: \forall i \in R\}$. While the definition of the vector $b^P$ is $b^P=\{b_i : \forall i \in P\} \cup \{0: \forall i \in R\}$. This results in a $m \times n$ matrix and a $m$ dimensional vector. Calculating the pseudo-inverse with this matrix generates numerical issues, the results is a matrix containing some $-nan$.\\
+The original definition of the matrix $A^P$ is $A^P=\{A.col(i) : \forall i \in P\} \cup \{0: \forall i \in R\}$. While the definition of the vector $b^P$ is $b^P=\{b_i : \forall i \in P\} \cup \{0: \forall i \in R\}$. This results in a $m \times n$ matrix and a $m$ dimensional vector. Calculating the pseudo-inverse with this matrix generates numerical issues, the result is a matrix containing some $-nan$.\\
 One way to solve this problem is to reduce the number of operations needed to perform the computation. To achieve this there are three ways:
 \begin{enumerate}
   \item Invert the matrix through some decomposition.
@@ -145,17 +145,17 @@ One way to solve this problem is to reduce the number of operations needed to pe
   \item Combining both 1 and 2.
 \end{enumerate}
 \paragraph{Decompositions}
-The decompositions tested are \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting. These decompositions has been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
-\paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition I noticed that a lot of useless operations containing $0$ were present. Not only this slows down this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed also plain inverse and Cholesky to work without issues.
+From the decompositions present in this page \ref{wiki:Matrix_decomposition}, \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting have been tested. These decompositions have been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
+\paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition can be noticed that a lot of useless operations containing $0$ were present. Not only this slows down this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed also plain inverse and Cholesky to work without issues.
 \paragraph*{}
 In the end the Cholesky without pivoting, applied on the modified $A^P$ matrix, was chosen because it is proven in \cite{Lee_numericallyefficient} to perform best.\\
 
 \section{GPU porting}
 Until now there are two version ported on GPU, the one taken from \textit{cms-sw} codebase and the one implemented from scratch.\\
-To exploit the parallelism provided by these devices a channel level parallelization is performed but, a dynamic parallelism inside the channel it to be studied.%More precisely all the readout from the channel are buffered and then there is a kernel invocation on all of them.
+To exploit the parallelism provided by these devices a channel level parallelization is performed but, a dynamic parallelism inside the channel is to be studied.%More precisely all the readout from the channel are buffered and then there is a kernel invocation on all of them.
 
 \section{Optimizations}
-There are two kind of optimizations performed: numerical and algorithmic. In the first case some mathematical properties are exploited to reduce the number of operations, in the other case some architecture level knowledge is used to speedup the computation.
+There are two kinds of optimizations performed: numerical and algorithmic. In the first case some mathematical properties are exploited to reduce the number of operations, in the other case some architecture level knowledge is used to speedup the computation.
 \subsection{Numerical}
 The optimization performed here is to avoid using swap matrices and the $P$ and $R$ vectors. Studying the algorithm it is possible to notice that the $P$, $R$ partitioning can be obtained in-place by permuting the matrix A.
 \begin{equation}
@@ -175,5 +175,5 @@ A permutation matrix is used to keep track of all the swapping and the solution 
 This optimization allows to reduce both memory allocation/de-allocation and cache faults resulting in a performance improvement of a factor of 2, as showed in \ref{img:speedup01}.
 \subsection{Algorithmic}
 The optimization performed here is exploiting some pragmas to vectorise fixed iteration loops and to unroll the others, which have non constant number  of iterations. \\
-From the profiling performed can be noted that in case of fixed iteration loops the vectorization gives better performance results respect to the unroll. Also the compiler unroll vectorized loops combining the best of both approaches. \\
-The unroll value has been determined empirically exploiting measurements like branch misprediction and cache faults for each value and used the one that minimize them.\\
+From the profiling performed can be noted that in case of fixed iteration loops the vectorization gives better performance results with respect to the unroll. Also the compiler unroll vectorized loops combining the best of both approaches. \\
+The unroll value has been determined empirically using the tool called \textbf{cachegrind}, using the method illustrated in this \href{http://valgrind.org/docs/manual/cg-manual.html}{page}. Exploiting measurements like branch misprediction and cache faults for each value and used the one that minimize them.\\
