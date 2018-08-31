@@ -19,7 +19,7 @@ Implementations tested:
   \caption{Speedup achieved with 10 iterations, higher is better}
   \label{img:speedup01}
 \end{figure}
-All the cpu implementations are single-threaded. With 64k channels the GPU version achieves a speedup of 5.8. It is interesting to notice that the unoptimized cpu version on gpu performs the same as the other implementations.
+All the cpu implementations are single-threaded. With 64k channels the optimized GPU version achieves a speedup of $2.67$. Since the corresponding CPU version achieves a speedup of $1.10$, the GPU implementation runs more than twice as fast as the corresponding CPU one.
 \begin{figure}[H]
   \includegraphics[width=.75\textwidth]{img/linscale}
   \caption{Time needed to complete 10 iterations, linear channel scale, lower is better}
@@ -31,8 +31,8 @@ From \ref{img:speedup01} that the GPU performs almost six times as fast with res
   \caption{Time needed to complete 10 iterations, log channel scale, lower is better}
   \label{img:logscale01}
 \end{figure}
-From the plot present in \ref{img:linscale01} can be noted that time increases linearly repsect to the number of channels instread, on GPU, the increase is always sub-linear.
-The plot in \ref{img:logscale01} makes more evident the difference between the different version of the algorithm. The GPU outperforms the CPU and it will be interesting to study what will happen if the number of channels increases even more.\\
+From the plot present in \ref{img:linscale01} can be noted that in the GPU version there is a change of slope around 15k channels, after this number the growth slows-down.
+The plot in \ref{img:logscale01} makes more evident the difference between the different version of the algorithm. The GPU outperforms the CPU and since the growth is sub-linear, it will be interesting to study what will happen if the number of channels increases even more.\\
 \section{Test02: GPU vs CPU, Optimized Matrix multiplication}
 
 \begin{figure}[h]
@@ -46,7 +46,7 @@ All the cpu implementations are single-threaded. With 64k channels the GPU versi
   \caption{Time needed to complete 10 iterations, linear channel scale, lower is better}
   \label{img:linscale02}
 \end{figure}
-From \ref{img:speedup01} can be noted that even with all the optimizations the GPU performs almost six times as fast.  The optimized CPU implementation in this case performs $35\%$ better than the legacy one. The GPU versions performs the same because in this test the GPU are underutilized.
+From \ref{img:speedup01} can be noted that even with all the optimizations the GPU speedup it does not increase. This is due to the fact that the GPU is underutilized so even if the implementation requires less resources it can not be noted in this test, and the data transfer respect to the computation is very big. The optimized CPU implementation in this case performs $35\%$ better than the legacy one.
 \begin{figure}[H]
   \includegraphics[width=.75\textwidth]{img/logscale02}
   \caption{Time needed to complete 10 iterations, log channel scale, lower is better}

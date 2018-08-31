@@ -1,8 +1,8 @@
 \babel@toc {english}{}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {2.1}{\ignorespaces Time spent into the various HLT reconstruction steps\relax }}{6}{table.caption.10}
+\contentsline {table}{\numberline {2.1}{\ignorespaces Time spent into the various HLT reconstruction steps\relax }}{5}{table.caption.9}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces speedup achieved after optimizing the matrix multiplication\relax }}{19}{table.caption.20}
+\contentsline {table}{\numberline {5.1}{\ignorespaces Speedup achieved after optimizing the matrix multiplication.\relax }}{19}{table.caption.19}

@@ -3,7 +3,7 @@ The HLT shares the same code used for offline data processing, thus the processi
   \centering
   \caption{HLT processing pipeline}
   \label{img:hlt}
-  \includegraphics[width=.75\textwidth]{img/hlt}
+  \includegraphics[width=.70\textwidth]{img/hlt}
 \end{figure}
 The table \ref{table:timeshare} shows how much time is spent in every single step of the reconstruction process. Most of it is spent into tracking but after it, the second more time consuming step is HCAL+ECAL local reconstruction that takes $113 ms$ corresponding to $24\%$ of the total time.
 \begin{figure}[ht]
@@ -12,7 +12,6 @@ The table \ref{table:timeshare} shows how much time is spent in every single ste
   \label{img:hlt}
   \includegraphics[width=\textwidth]{img/timeshare}
 \end{figure}
-Given the time needed to perform this reconstruction even achieving a speedup of two would reduce the total processing time by more than $10\%$. This is the focus of this project: try to reduce it as much as possible by both optimizing it for CPU and exploiting GPU resources.
 \begin{table}[ht]
   \caption{Time spent into the various HLT reconstruction steps}
   \label{table:timeshare}
@@ -33,6 +32,7 @@ Given the time needed to perform this reconstruction even achieving a speedup of
     Total                     & 471.5 ms       & 100\%      \\ \hline
   \end{tabular}
 \end{table}
+Given the time needed to perform this reconstruction even achieving a speedup of two would reduce the total processing time by more than $10\%$. This is the focus of this project: try to reduce it as much as possible by both optimizing it for CPU and exploiting GPU resources.
 \section{Problem statement}
 For each channel \{given $n$ charge readouts $\rightarrow$ reconstruct the energy\}. \\
 \begin{equation}\label{eq:chisq}
@@ -113,7 +113,7 @@ The pseudo-code presented in algorithm \ref{alg:nnls}, starts with a feasible so
         \While{$min(s) \leq 0 $}
           \State $\alpha=min_i\{\frac{x_i}{x_i-s_i} : i \in P \land s_i \leq 0 \}$
           \State $ \forall i \in P : x_i \gets x_i + \alpha (s_i - x_i)$
-          \State move to $R$ all $i \in P : x_i \gets 0$
+          \State move to $R$ all $i \in P : x_i = 0$
           \State $s \gets ((A^P)^T A^P)^{-1}A^P b^P$ \Comment{recompute s for the next iteration}
           \EndWhile
         \State $\forall i \in P : x_i = s_i$
@@ -145,13 +145,13 @@ One way to solve this problem is to reduce the number of operations needed to pe
   \item Combining both 1 and 2.
 \end{enumerate}
 \paragraph{Decompositions}
-From the decompositions present in this page \ref{wiki:Matrix_decomposition}, \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting have been tested. These decompositions have been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
+From the decompositions present in this page \cite{wiki:Matrix_decomposition}, \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting have been tested. These decompositions have been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
 \paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition can be noticed that a lot of useless operations containing $0$ were present. Not only this slows down this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed also plain inverse and Cholesky to work without issues.
 \paragraph*{}
 In the end the Cholesky without pivoting, applied on the modified $A^P$ matrix, was chosen because it is proven in \cite{Lee_numericallyefficient} to perform best.\\
 
 \section{GPU porting}
-Until now there are two version ported on GPU, the one taken from \textit{cms-sw} codebase and the one implemented from scratch.\\
+Until now there are two versions ported on GPU, the one taken from \textit{cms-sw} codebase and the one implemented from scratch.\\
 To exploit the parallelism provided by these devices a channel level parallelization is performed but, a dynamic parallelism inside the channel is to be studied.%More precisely all the readout from the channel are buffered and then there is a kernel invocation on all of them.
 
 \section{Optimizations}
