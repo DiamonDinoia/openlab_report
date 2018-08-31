@@ -1,6 +1,7 @@
-In all tests we did not manage to generate enough threads to fill all the warps. In this case the speedup showed in table \ref{tab:speedup} is of a factor of $\bm{2.67}$ but by increasing the size of the dataset better results should be expected. Also, the CPU implementation optimized with all the numerical, algorithmic, and architecture dependent tweaks reaches a speedup of $\bm{1.38}$. This without changing the intrinsic algorithmic complexity is a very good result.\\
+The results of all the tests performed are summarized in the table \ref{tab:speedup} below. There are two important things to notice: first, with improvements applied to the CPU version a speed up of additional $\bm{38\%}$ was achieved. In case of CPU, increasing the number of channels does not affect the speedup, because all the versions are single threaded, therefore an approximately uniform improvement is observed. Second of all, by porting to the GPU a speedup of a factor of $\bm{2.67}$ was achieved for the case of $\bm{~65K}$ channels (with trivial parallelization across all the channels). Important to note that for the GPU, a different trend is observed (increase up to ~8K and then a slow down, and an increase again), as expected, due to the parallel nature of the architecture.
+
 \begin{table}[H]
-  \caption{Speedup achieved after optimizing the matrix multiplication.}
+  \caption{Speedup achieved after applying all the optimizations.}
   \label{tab:speedup}
 \begin{tabular}{lrrrrrrr}
 \toprule
@@ -15,9 +16,10 @@ multifit\_cpu\_swap   &   0.45 &   0.48 &   0.51 &   0.50 &   0.50 &   0.50 &   
 \bottomrule
 \end{tabular}
 \end{table}
-There are few things left to try:
+There are few things left to try, some are architecture dependent and some are algorithmic:
 \begin{itemize}
-  \item Dynamic parallelism on GPU to better exploit the available resources on heavy numerical computations and to free up the unneeded ones.
-  \item Update the Cholesky instead of recomputing it.
+  \item \textbf{GPU}: Dynamic parallelism to better exploit the available resources.
+  \item \textbf{GPU}: Parallelise matrix operations further, however that needs to be properly measured as matrices being used are quite small.
+  \item \textbf{Algorithmic}: Update the Cholesky instead of recomputing it.
 
 \end{itemize}

@@ -146,7 +146,7 @@ One way to solve this problem is to reduce the number of operations needed to pe
 \end{enumerate}
 \paragraph{Decompositions}
 From the decompositions present in this page \cite{wiki:Matrix_decomposition}, \textbf{Cholesky} and \textbf{HouseHolder} with and without pivoting have been tested. These decompositions have been chosen following the advices present on this \href{https://eigen.tuxfamily.org/dox/group__LeastSquares.html}{page} of Eigen documentation. As a result all of them except the HouseHolder with pivoting were numerically unstable. But, the HouseHolder with pivoting is not fast enough to meet the time constraints so, other approaches has been tested.
-\paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition can be noticed that a lot of useless operations containing $0$ were present. Not only this slows down this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed also plain inverse and Cholesky to work without issues.
+\paragraph{$\boldsymbol A^P$} Observing the computations performed utilizing the original definition can be noticed that a lot of useless operations containing $0$ were present. Not only this is overhead but also increases the algorithmic error. Changing the definition to the one provided into the pseudo-code allowed Cholesky and also the plain inverse to work without issues.
 \paragraph*{}
 In the end the Cholesky without pivoting, applied on the modified $A^P$ matrix, was chosen because it is proven in \cite{Lee_numericallyefficient} to perform best.\\
 
