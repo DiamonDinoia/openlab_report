@@ -1,5 +1,5 @@
-From our analysis is it possible to conclude that GPUs outperforms CPUs in HEP workflows. In all tests we did not manage to generate enough threads to fill all the warps. And even in this case the speedup showed in table \ref{tab:speedup} is of a factor of $2.67$. Also, the CPU implementation optimized with all the numerical, algorithmic, and architecture dependent tweaks reaches a speedup of $1.38$.  
-\begin{table}[h]
+In all tests we did not manage to generate enough threads to fill all the warps. In this case the speedup showed in table \ref{tab:speedup} is of a factor of $\bm{2.67}$ but by increasing the size of the dataset better results should be expected. Also, the CPU implementation optimized with all the numerical, algorithmic, and architecture dependent tweaks reaches a speedup of $\bm{1.38}$. This without changing the intrinsic algorithmic complexity is a very good result.\\
+\begin{table}[H]
   \caption{Speedup achieved after optimizing the matrix multiplication.}
   \label{tab:speedup}
 \begin{tabular}{lrrrrrrr}
@@ -15,3 +15,9 @@ multifit\_cpu\_swap   &   0.45 &   0.48 &   0.51 &   0.50 &   0.50 &   0.50 &   
 \bottomrule
 \end{tabular}
 \end{table}
+There are few things left to try:
+\begin{itemize}
+  \item Dynamic parallelism on GPU to better exploit the available resources on heavy numerical computations and to free up the unneeded ones.
+  \item Update the Cholesky instead of recomputing it.
+
+\end{itemize}
